@@ -12,7 +12,7 @@ SNAKE_PATH = "assets/snakeSection.png"
 class MyGame(arcade.Window):
     def __init__(self, width, height):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-        arcade.set_background_color(arcade.color.WHITE)
+        arcade.set_background_color(arcade.color.PINK)
 
 
     def setup(self):
@@ -20,16 +20,20 @@ class MyGame(arcade.Window):
         self.snake = arcade.Sprite(SNAKE_PATH)
         self.snake.center_x = SCREEN_WIDTH / 2
         self.snake.center_y = SCREEN_HEIGHT / 2
+        self.snake2 = arcade.Sprite(SNAKE_PATH)
+        self.snake2.center_x = SCREEN_WIDTH / 5
+        self.snake2.center_y = SCREEN_HEIGHT / 5
 
         # keep the ship sprites in a sprite list which is faster later
         self.snake_list = arcade.SpriteList()
         self.snake_list.append(self.snake)
-
+        self.snake_list.append(self.snake2)
 
     def on_draw(self):
         arcade.start_render()
 
         self.snake_list.draw()
+        
         arcade.finish_render()
 
     def on_key_press(self, symbol, modifiers):
