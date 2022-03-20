@@ -44,9 +44,6 @@ class MyGame(arcade.Window):
 
     def on_update(self, delta_time: float):
         self.snake_list.update()
-
-
-
     
 def main():
     game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
