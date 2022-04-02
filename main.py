@@ -31,6 +31,7 @@ class MyGame(arcade.Window):
         self.snake = arcade.Sprite(SNAKE_PATH)
         self.snake.center_x = SCREEN_WIDTH / 2
         self.snake.center_y = SCREEN_HEIGHT / 2
+        self.score = 0
 
 
         self.food = arcade.Sprite(FOOD_PATH)
@@ -50,6 +51,8 @@ class MyGame(arcade.Window):
 
         self.snake_list.draw()
         self.food_list.draw()
+
+        arcade.draw_text("score = " + str(self.score), SCREEN_WIDTH - 100, SCREEN_HEIGHT - 20, arcade.color.BLACK, 15, font_name="Arial")
         
         arcade.finish_render()
 
@@ -83,7 +86,12 @@ class MyGame(arcade.Window):
         #collision
         if self.snake.center_y>SCREEN_HEIGHT or self.snake.center_y<0 or self.snake.center_x<0 or self.snake.center_x>SCREEN_WIDTH:
             self.setup()
-         
+
+        food_dist_x = abs(self.snake.center_x - self.food.center_x)
+        food_dist_y = abs(self.snake.center_y - self.food.center_y)
+        if food_dist_y < self.food.height and food_dist_x < self.food.width:
+            self.place_food()
+            self.score+=1
         self.snake_list.update()
     def place_food(self):
         self.food.center_x = random.randint(self.food.width, SCREEN_WIDTH - self.food.width)  
