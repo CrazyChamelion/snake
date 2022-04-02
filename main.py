@@ -1,6 +1,7 @@
 from turtle import Screen
 import arcade
 import os
+import random 
 
 # Constants
 SCREEN_WIDTH = 1280
@@ -9,7 +10,7 @@ SCREEN_TITLE = "Snake Game"
 
 # Sprite paths
 SNAKE_PATH = "assets/snakeSection.png"
-
+FOOD_PATH = "assets/food.png"
 # velocity contants
 DIRECTION_NONE = 0
 DIRECTION_LEFT = 1
@@ -31,9 +32,16 @@ class MyGame(arcade.Window):
         self.snake.center_x = SCREEN_WIDTH / 2
         self.snake.center_y = SCREEN_HEIGHT / 2
 
+
+        self.food = arcade.Sprite(FOOD_PATH)
+        self.place_food()
+
         # keep the ship sprites in a sprite list which is faster later
         self.snake_list = arcade.SpriteList()
         self.snake_list.append(self.snake)
+
+        self.food_list = arcade.SpriteList()
+        self.food_list.append(self.food)
 
         self.direction = DIRECTION_NONE
 
@@ -41,6 +49,7 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         self.snake_list.draw()
+        self.food_list.draw()
         
         arcade.finish_render()
 
@@ -75,14 +84,17 @@ class MyGame(arcade.Window):
         if self.snake.center_y>SCREEN_HEIGHT or self.snake.center_y<0 or self.snake.center_x<0 or self.snake.center_x>SCREEN_WIDTH:
             self.setup()
          
-
-
         self.snake_list.update()
+    def place_food(self):
+        self.food.center_x = random.randint(self.food.width, SCREEN_WIDTH - self.food.width)  
+        self.food.center_y = random.randint(self.food.height, SCREEN_HEIGHT - self.food.height)
         
+
 def main():
     game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
     game.setup()
     arcade.run()
+    
 
 
 if __name__ == "__main__":
