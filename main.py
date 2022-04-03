@@ -30,9 +30,9 @@ class MyGame(arcade.Window):
 
     def setup(self):
         # draw part of a snake
-        self.snake = arcade.Sprite(SNAKE_PATH)
-        self.snake.center_x = SCREEN_WIDTH / 2
-        self.snake.center_y = SCREEN_HEIGHT / 2
+        self.snake_head = arcade.Sprite(SNAKE_PATH)
+        self.snake_head.center_x = SCREEN_WIDTH / 2
+        self.snake_head.center_y = SCREEN_HEIGHT / 2
         self.score = 0
 
 
@@ -40,29 +40,29 @@ class MyGame(arcade.Window):
         self.place_food()
 
         # keep the ship sprites in a sprite list which is faster later
-        self.snake_list = arcade.SpriteList()
-        self.snake_list.append(self.snake)
+        self.snake_head_list = arcade.SpriteList()
+        self.snake_head_list.append(self.snake_head)
 
         self.food_list = arcade.SpriteList()
         self.food_list.append(self.food)
 
         #draw the tail
         self.tail_list = arcade.SpriteList()
-        last_x = self.snake.center_x
-        last_y = self.snake.center_y
+        last_x = self.snake_head.center_x
+        last_y = self.snake_head.center_y
         for i in range(2):
             element = arcade.Sprite(SNAKE_PATH)
             element.center_x = last_x - element.width
             element.center_y = last_y
             self.tail_list.append(element)
-            last_x -= self.snake.width
+            last_x -= self.snake_head.width
 
         self.direction = DIRECTION_NONE
 
     def on_draw(self):
         arcade.start_render()
 
-        self.snake_list.draw()
+        self.snake_head_list.draw()
         self.food_list.draw()
         self.tail_list.draw()
 
@@ -90,16 +90,16 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time: float):
         #movement
         if self.direction == DIRECTION_UP:
-            self.snake.center_y+=10
+            self.snake_head.center_y+=10
         if self.direction == DIRECTION_DOWN:
-            self.snake.center_y-=10
+            self.snake_head.center_y-=10
         if self.direction == DIRECTION_LEFT:
-            self.snake.center_x-=10
+            self.snake_head.center_x-=10
         if self.direction == DIRECTION_RIGHT: 
-            self.snake.center_x+=10
+            self.snake_head.center_x+=10
 
-        last_x = self.snake.center_x
-        last_y = self.snake.center_y
+        last_x = self.snake_head.center_x
+        last_y = self.snake_head.center_y
         for i in range(len(self.tail_list)):
             self.tail_list[i].center_x += (last_x - self.tail_list[i].center_x)/2
             self.tail_list[i].center_y += (last_y - self.tail_list[i].center_y)/2
@@ -108,11 +108,11 @@ class MyGame(arcade.Window):
 
         
         #collision
-        if self.snake.center_y>SCREEN_HEIGHT or self.snake.center_y<0 or self.snake.center_x<0 or self.snake.center_x>SCREEN_WIDTH:
+        if self.snake_head.center_y>SCREEN_HEIGHT or self.snake_head.center_y<0 or self.snake_head.center_x<0 or self.snake_head.center_x>SCREEN_WIDTH:
             self.setup()
 
-        food_dist_x = abs(self.snake.center_x - self.food.center_x)
-        food_dist_y = abs(self.snake.center_y - self.food.center_y)
+        food_dist_x = abs(self.snake_head.center_x - self.food.center_x)
+        food_dist_y = abs(self.snake_head.center_y - self.food.center_y)
         if food_dist_y < self.food.height and food_dist_x < self.food.width:
             self.place_food()
             element = arcade.Sprite(SNAKE_PATH)
@@ -122,7 +122,10 @@ class MyGame(arcade.Window):
             self.tail_list.append(element)
             self.score+=1
 
-        self.snake_list.update()
+        # check for collision with the tail
+
+
+        self.snake_head_list.update()
 
     def place_food(self):
         self.food.center_x = random.randint(self.food.width, SCREEN_WIDTH - self.food.width)  
