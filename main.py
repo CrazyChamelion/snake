@@ -2,6 +2,7 @@ from turtle import Screen
 import arcade
 import os
 import random
+import math
 
 from numpy import append 
 
@@ -50,14 +51,17 @@ class MyGame(arcade.Window):
         self.tail_list = arcade.SpriteList()
         last_x = self.snake_head.center_x
         last_y = self.snake_head.center_y
+        print("head " + str(last_x) + " " + str(last_y))
         for i in range(2):
             element = arcade.Sprite(SNAKE_PATH)
             element.center_x = last_x - element.width
             element.center_y = last_y
+            print("tail " +str(i) + " " + str(element.center_x) + " " + str(element.center_y))
             self.tail_list.append(element)
             last_x -= self.snake_head.width
 
         self.direction = DIRECTION_NONE
+        self.stop_game = False
 
     def on_draw(self):
         arcade.start_render()
@@ -78,6 +82,7 @@ class MyGame(arcade.Window):
             self.setup()
         if arcade.key.W == symbol:
             self.direction = DIRECTION_UP
+            print("\n\n\n")
         if arcade.key.A == symbol:
             self.direction = DIRECTION_LEFT
         if arcade.key.S == symbol:
@@ -88,6 +93,8 @@ class MyGame(arcade.Window):
         pass
 
     def on_update(self, delta_time: float):
+        if self.stop_game:
+            return
         #movement
         if self.direction == DIRECTION_UP:
             self.snake_head.center_y+=10
@@ -98,15 +105,23 @@ class MyGame(arcade.Window):
         if self.direction == DIRECTION_RIGHT: 
             self.snake_head.center_x+=10
 
-        last_x = self.snake_head.center_x
-        last_y = self.snake_head.center_y
-        for i in range(len(self.tail_list)):
-            self.tail_list[i].center_x += (last_x - self.tail_list[i].center_x)/2
-            self.tail_list[i].center_y += (last_y - self.tail_list[i].center_y)/2
-            last_x = self.tail_list[i].center_x
-            last_y = self.tail_list[i].center_y
+        if self.direction != DIRECTION_NONE:
+            last_x = self.snake_head.center_x
+            last_y = self.snake_head.center_y
+            for i in range(len(self.tail_list)):
+                x_dir = (last_x - self.tail_list[i].center_x)
+                y_dir = (last_y - self.tail_list[i].center_y)
+                dir_len = math.sqrt(x_dir*x_dir + y_dir*y_dir)
+                x_dir = 10 * x_dir / dir_len 
+                y_dir = 10 * y_dir / dir_len 
+                self.tail_list[i].center_x += x_dir
+                self.tail_list[i].center_y += y_dir
+                last_x = self.tail_list[i].center_x
+                last_y = self.tail_list[i].center_y
+            print("head " + str(self.snake_head.center_x) + " " + str(self.snake_head.center_y))
+            for i in range(len(self.tail_list)):
+                print("tail " +str(i) + " " + str(self.tail_list[i].center_x) + " " + str(self.tail_list[i].center_y))
 
-        
         #collision
         if self.snake_head.center_y>SCREEN_HEIGHT or self.snake_head.center_y<0 or self.snake_head.center_x<0 or self.snake_head.center_x>SCREEN_WIDTH:
             self.setup()
@@ -123,7 +138,9 @@ class MyGame(arcade.Window):
             self.score+=1
 
         # check for collision with the tail
-
+        tail_collisions = arcade.check_for_collision_with_list(self.snake_head, self.tail_list)
+        if len(tail_collisions) > 2:
+            self.stop_game = True
 
         self.snake_head_list.update()
 
