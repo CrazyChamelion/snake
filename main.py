@@ -93,8 +93,6 @@ class MyGame(arcade.Window):
         if self.stop_game:
             return
         #movement
-        #premove_head_x = self.snake_head.center_x
-        #premove_head_y = self.snake_head.center_y
         if self.direction == DIRECTION_UP:
             self.snake_head.center_y+=10
         if self.direction == DIRECTION_DOWN:
@@ -105,11 +103,11 @@ class MyGame(arcade.Window):
             self.snake_head.center_x+=10
 
         if self.direction != DIRECTION_NONE:
-            premove_x = self.snake_head.center_x
-            premove_y = self.snake_head.center_y
+            previous_x = self.snake_head.center_x
+            previous_y = self.snake_head.center_y
             for i in range(len(self.tail_list)):
-                x_dir = (premove_x - self.tail_list[i].center_x)
-                y_dir = (premove_y - self.tail_list[i].center_y)
+                x_dir = (previous_x - self.tail_list[i].center_x)
+                y_dir = (previous_y - self.tail_list[i].center_y)
                 dir_len = math.sqrt(x_dir*x_dir + y_dir*y_dir)
                 if dir_len > 1:
                     x_dir = 10 * x_dir / dir_len 
@@ -117,8 +115,8 @@ class MyGame(arcade.Window):
                 if dir_len > (self.snake_head.width + 1):
                     self.tail_list[i].center_x += x_dir
                     self.tail_list[i].center_y += y_dir
-                premove_x = self.tail_list[i].center_x
-                premove_y = self.tail_list[i].center_y
+                previous_x = self.tail_list[i].center_x
+                previous_y = self.tail_list[i].center_y
 
         #collision
         if self.snake_head.center_y>SCREEN_HEIGHT or self.snake_head.center_y<0 or self.snake_head.center_x<0 or self.snake_head.center_x>SCREEN_WIDTH:
