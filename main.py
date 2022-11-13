@@ -81,13 +81,13 @@ class MyGame(arcade.Window):
 
         if arcade.key.N == symbol:
             self.setup()
-        if arcade.key.W == symbol:
+        if arcade.key.W  == symbol and self.direction != DIRECTION_DOWN: 
             self.direction = DIRECTION_UP
-        if arcade.key.A == symbol:
+        if arcade.key.A == symbol and self.direction != DIRECTION_RIGHT and self.direction != DIRECTION_NONE:
             self.direction = DIRECTION_LEFT
-        if arcade.key.S == symbol:
+        if arcade.key.S == symbol and self.direction != DIRECTION_UP:
             self.direction = DIRECTION_DOWN
-        if arcade.key.D == symbol:
+        if arcade.key.D == symbol and self.direction != DIRECTION_LEFT:
             self.direction = DIRECTION_RIGHT    
     def on_key_release(self, symbol, modifiers):
         pass
