@@ -6,12 +6,15 @@ import math
 
 from numpy import append 
 
+
+
 # Constants
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Snake Game"
 
 # Sprite paths
+SNAKE_HEAD_PATH = "assets/snakeHead.png"
 SNAKE_PATH = "assets/snakeSection.png"
 FOOD_PATH = "assets/food.png"
 # velocity contants
@@ -26,12 +29,12 @@ SNAKE_VELOCITY = 10
 class MyGame(arcade.Window):
     def __init__(self, width, height):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-        arcade.set_background_color(arcade.color.PINK)
+        arcade.set_background_color(arcade.color.BABY_BLUE_EYES)
 
 
     def setup(self):
         # draw part of a snake
-        self.snake_head = arcade.Sprite(SNAKE_PATH)
+        self.snake_head = arcade.Sprite(SNAKE_HEAD_PATH)
         self.snake_head.center_x = SCREEN_WIDTH / 2
         self.snake_head.center_y = SCREEN_HEIGHT / 2
         self.score = 0
