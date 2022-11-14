@@ -37,7 +37,8 @@ class MyGame(arcade.Window):
         self.snake_head = arcade.Sprite(SNAKE_HEAD_PATH)
         self.snake_head.center_x = SCREEN_WIDTH / 2
         self.snake_head.center_y = SCREEN_HEIGHT / 2
-        self.score = 0
+        self.score = 1
+        self.god_mode = False
 
 
         self.food = arcade.Sprite(FOOD_PATH)
@@ -89,6 +90,12 @@ class MyGame(arcade.Window):
             self.direction = DIRECTION_DOWN
         if arcade.key.D == symbol and self.direction != DIRECTION_LEFT:
             self.direction = DIRECTION_RIGHT    
+        if arcade.key.V == symbol: 
+            self.score += 69420
+        if arcade.key.G == symbol: 
+            self.god_mode = True
+        if arcade.key.M == symbol: 
+            self.god_mode = False
     def on_key_release(self, symbol, modifiers):
         pass
 
@@ -121,8 +128,8 @@ class MyGame(arcade.Window):
                 previous_x = self.tail_list[i].center_x
                 previous_y = self.tail_list[i].center_y
 
-        #collision
-        if self.snake_head.center_y>SCREEN_HEIGHT or self.snake_head.center_y<0 or self.snake_head.center_x<0 or self.snake_head.center_x>SCREEN_WIDTH:
+        # hit a wall
+        if not self.god_mode and (self.snake_head.center_y>SCREEN_HEIGHT or self.snake_head.center_y<0 or self.snake_head.center_x<0 or self.snake_head.center_x>SCREEN_WIDTH):
             self.setup()
 
         food_dist_x = abs(self.snake_head.center_x - self.food.center_x)
@@ -134,12 +141,16 @@ class MyGame(arcade.Window):
             element.center_x = self.tail_list[last_tail_index].center_x
             element.center_y = self.tail_list[last_tail_index].center_y
             self.tail_list.append(element)
-            self.score+=1
+            if self.god_mode:
+                self.score *=2
+            else: 
+                self.score +=1
 
         # check for collision with the tail
-        tail_collisions = arcade.check_for_collision_with_list(self.snake_head, self.tail_list)
-        if len(tail_collisions) > 1:
-            self.stop_game = True
+        if not self.god_mode:
+            tail_collisions = arcade.check_for_collision_with_list(self.snake_head, self.tail_list)
+            if len(tail_collisions) > 1:
+                self.stop_game = True
 
         self.snake_head_list.update()
 
@@ -157,3 +168,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+ 
