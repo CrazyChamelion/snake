@@ -39,6 +39,7 @@ class MyGame(arcade.Window):
         self.snake_head.center_y = SCREEN_HEIGHT / 2
         self.score = 1
         self.god_mode = False
+        self.easy_food =False
 
 
         self.food = arcade.Sprite(FOOD_PATH)
@@ -72,7 +73,7 @@ class MyGame(arcade.Window):
         self.food_list.draw()
         self.tail_list.draw()
 
-        arcade.draw_text("score = " + str(self.score), SCREEN_WIDTH - 100, SCREEN_HEIGHT - 20, arcade.color.BLACK, 15, font_name="Arial")
+        arcade.draw_text("score = " + str(self.score), 0, SCREEN_HEIGHT - 20, arcade.color.BLACK, 15, font_name="Arial")
         
         arcade.finish_render()
 
@@ -96,6 +97,10 @@ class MyGame(arcade.Window):
             self.god_mode = True
         if arcade.key.M == symbol: 
             self.god_mode = False
+        if arcade.key.E == symbol:
+            self.easy_food = True
+        if arcade.key.H == symbol:
+            self.easy_food = False
     def on_key_release(self, symbol, modifiers):
         pass
 
@@ -136,11 +141,17 @@ class MyGame(arcade.Window):
         food_dist_y = abs(self.snake_head.center_y - self.food.center_y)
         if food_dist_y < self.food.height and food_dist_x < self.food.width:
             self.place_food()
-            element = arcade.Sprite(SNAKE_PATH)
-            last_tail_index = len(self.tail_list) - 1
-            element.center_x = self.tail_list[last_tail_index].center_x
-            element.center_y = self.tail_list[last_tail_index].center_y
-            self.tail_list.append(element)
+            # grow the snake
+            grow_ammount = 1
+            if self.god_mode:
+                grow_ammount = len(self.tail_list)
+            for x in range(grow_ammount):
+                element = arcade.Sprite(SNAKE_PATH)
+                last_tail_index = len(self.tail_list) - 1
+                element.center_x = self.tail_list[last_tail_index].center_x
+                element.center_y = self.tail_list[last_tail_index].center_y
+                self.tail_list.append(element)
+            #grow the score
             if self.god_mode:
                 self.score *=2
             else: 
@@ -155,8 +166,24 @@ class MyGame(arcade.Window):
         self.snake_head_list.update()
 
     def place_food(self):
-        self.food.center_x = random.randint(self.food.width, SCREEN_WIDTH - self.food.width)  
-        self.food.center_y = random.randint(self.food.height, SCREEN_HEIGHT - self.food.height)
+        if self.easy_food:
+            if self.direction == DIRECTION_LEFT:
+                self.food.center_x = self.snake_head.center_x - self.snake_head.width * 2
+                self.food.center_y = self.snake_head.center_y
+            if self.direction == DIRECTION_RIGHT:
+                self.food.center_x = self.snake_head.center_x + self.snake_head.width * 2
+                self.food.center_y = self.snake_head.center_y
+            if self.direction == DIRECTION_DOWN:
+                self.food.center_x = self.snake_head.center_x
+                self.food.center_y = self.snake_head.center_y - self.snake_head.height * 2
+            if self.direction == DIRECTION_UP:
+                self.food.center_x = self.snake_head.center_x
+                self.food.center_y = self.snake_head.center_y + self.snake_head.height * 2
+        else:
+            self.food.center_x = random.randint(self.food.width *2 , SCREEN_WIDTH - self.food.width *2)  
+            self.food.center_y = random.randint(self.food.height *2 , SCREEN_HEIGHT - self.food.height *2)
+           
+        
         
 
 def main():
